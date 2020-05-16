@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+includedir=${exec_prefix}/include
+
+Name: foo static archive
+Description: The foo library.
+Version: @VERSION@
+Libs: -L${libdir} -lfoo-static-@FOO_API_VERSION@ @FOO_LIBRARIES@
+Cflags: -I${includedir}/foo-@FOO_API_VERSION@ -DFOO_STATIC
