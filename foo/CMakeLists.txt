@@ -1,21 +1,20 @@
-cmake_minimum_required(VERSION 2.8)
+if(NOT CMAKE_TOOLCHAIN_FILE)
+    if(WIN32 AND NOT CYGWIN)
+        set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory")
+    else()
+        set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Installation Directory")
+    endif()
+else()
+    # any cross-compiling
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory")
+endif()
+
+
+cmake_minimum_required(VERSION 3.1)
 
 project(FooBar LANGUAGES CXX)
 
 include(GNUInstallDirs)
-
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT.html
-  if(NOT CMAKE_TOOLCHAIN_FILE)
-    if(WIN32 AND NOT CYGWIN)
-      set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory" FORCE)
-    else()
-      set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Installation Directory" FORCE)
-    endif()
-  else()
-    # any cross-compiling
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory" FORCE)
-  endif()
-endif()
 
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/build/cmake)
@@ -91,6 +90,14 @@ install (
    DESTINATION "${FOO_HEADER_INSTALL_DIR}/foo"
 )
 
+#foo-targets.cmake
+install (
+    EXPORT foo-targets
+    NAMESPACE foo::
+    FILE foo-targets.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/foo-${FOO_API_VERSION}
+)
+
 #[[
 # variables unsed in foo-1.0.pc.in and foo-static-1.0.pc.in
 set (VERSION "${FOO_VERSION}")
@@ -120,21 +127,12 @@ install (
 ]]
 
 
-#foo-targets.cmake
-export (EXPORT foo-targets
-   #NAMESPACE CactusEngine::
-   FILE "${CMAKE_CURRENT_BINARY_DIR}/foo-targets.cmake"
-)
-
-#foo-targets.cmake
-install (EXPORT foo-targets
-   #NAMESPACE CactusEngine::
-   FILE foo-targets.cmake
-   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/foo-${FOO_API_VERSION}
-)
-
-
 include (CMakePackageConfigHelpers)
+
+configure_package_config_file(
+  foo-config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/foo-${FOO_API_VERSION}-config.cmake"
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/foo-${FOO_API_VERSION}
+)
 
 #foo-1.0-config-version.cmake
 write_basic_package_version_file (
@@ -143,10 +141,6 @@ write_basic_package_version_file (
    COMPATIBILITY AnyNewerVersion
 )
 
-configure_file (foo-config.cmake
-   "${CMAKE_CURRENT_BINARY_DIR}/foo-${FOO_API_VERSION}-config.cmake"
-   COPYONLY
-)
 
 install (
    FILES

@@ -1,20 +1,19 @@
+if(NOT CMAKE_TOOLCHAIN_FILE)
+    if(WIN32 AND NOT CYGWIN)
+        set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory")
+    else()
+        set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Installation Directory")
+    endif()
+else()
+    # any cross-compiling
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory")
+endif()
+
 cmake_minimum_required(VERSION 2.8)
 project(bar)
 
 include(GNUInstallDirs)
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)  # https://cmake.org/cmake/help/latest/variable/CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT.html
-  if(NOT CMAKE_TOOLCHAIN_FILE)
-    if(WIN32 AND NOT CYGWIN)
-      set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory" FORCE)
-    else()
-      set(CMAKE_INSTALL_PREFIX "/usr/local" CACHE PATH "Installation Directory" FORCE)
-    endif()
-  else()
-    # any cross-compiling
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation Directory" FORCE)
-  endif()
-endif()
 
 set(BUILD_SHARED_LIBS "" ON)
 
@@ -36,7 +35,6 @@ endif()
 message(STATUS "foo_include_directories: " ${foo_include_directories})
 message(STATUS "foo_libraries: " ${foo_libraries})
 
-
 add_executable(bar bar.cpp)
 
 target_include_directories(bar PUBLIC include
@@ -46,5 +44,5 @@ target_compile_definitions(bar PRIVATE ${foo_definitions})
 target_link_libraries(bar ${foo_libraries})
 
 install(TARGETS bar
-  EXPORT foo-targets
-  RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin)
+  RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
+ )
