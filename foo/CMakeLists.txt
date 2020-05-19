@@ -129,8 +129,8 @@ install (
 
 include (CMakePackageConfigHelpers)
 
-set(INCLUDE_INSTALL_DIR ${FOO_HEADER_INSTALL_DIR} CACHE)
-set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR} CACHE )
+set(INCLUDE_INSTALL_DIR ${FOO_HEADER_INSTALL_DIR} )
+set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR} )
 
 configure_package_config_file(
     foo-config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/foo-${FOO_API_VERSION}-config.cmake"
