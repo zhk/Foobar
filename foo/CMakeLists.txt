@@ -131,11 +131,12 @@ include (CMakePackageConfigHelpers)
 
 set(INCLUDE_INSTALL_DIR ${FOO_HEADER_INSTALL_DIR} )
 set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR} )
+set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR} )
 
 configure_package_config_file(
     foo-config.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/foo-${FOO_API_VERSION}-config.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/foo-${FOO_API_VERSION}
-    PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR
+    PATH_VARS INCLUDE_INSTALL_DIR
 )
 
 #foo-1.0-config-version.cmake

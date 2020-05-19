@@ -31,5 +31,34 @@ endif()
 
 
 install(TARGETS bar
-  RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
- )
+    RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin
+)
+
+#[[
+include(GetPrerequisites)
+
+if (CMAKE_BUILD_TYPE MATCHES "Debug" OR CMAKE_BUILD_TYPE EQUAL "None" OR NOT CMAKE_BUILD_TYPE)
+    message(STATUS "----- CMAKE_BUILD_TYPE is Debug")
+    set(CMAKE_BUILD_TYPE "Debug")
+elseif (CMAKE_BUILD_TYPE MATCHES "Release")
+    message(STATUS "----- CMAKE_BUILD_TYPE is Release")
+    set(CMAKE_BUILD_TYPE "Release")
+elseif (CMAKE_BUILD_TYPE MATCHES "RelWitchDebInfo")
+    message(STATUS "----- CMAKE_BUILD_TYPE is RelWitchDebInfo")
+    set(CMAKE_BUILD_TYPE "RelWitchDebInfo")
+elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+    message(STATUS "----- CMAKE_BUILD_TYPE is MinSizeRel")
+    set(CMAKE_BUILD_TYPE "MinSizeRel")
+else ()
+    message(STATUS "----- unknown CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
+endif ()
+
+get_property(MY_BINARY_LOCATION TARGET bar PROPERTY LOCATION_${CMAKE_BUILD_TYPE})
+GET_PREREQUISITES(${MY_BINARY_LOCATION} DEPENDENCIES 1 0 "" "")
+message("MY_BINARY_LOCATION='${MY_BINARY_LOCATION}'")
+
+foreach(DEPENDENCY_FILE ${DEPENDENCIES})
+    GP_RESOLVE_ITEM("${INSTALL_BIN_DIR}" "${DEPENDENCY_FILE}" "" "" resolved_file)
+    message("resolved_file='${resolved_file}'")
+endforeach()
+]]
